@@ -1,0 +1,801 @@
+set nocompatible
+
+set encoding=utf8
+
+" set hidden
+
+" TagsGenerate[!] - Generate 'tags' file
+
+map q: <nop>
+nnoremap Q <nop>
+
+autocmd BufEnter *.tpp :setlocal filetype=cpp
+
+let &path = &path . ',' . getcwd() . '/**'
+nnoremap tgf <C-W>gf
+
+
+" Open last-closed window
+nnoremap <F7> :vs#<cr>
+
+" Jump to definition
+nnoremap <leader>f :YcmCompleter GoTo<cr>
+
+" Make Y yank from the cursor to the end of the line (Compatible with C and D)
+map Y y$
+
+" Make 's' act like 'd', except it doesn't save the test to a register
+nnoremap s "_d
+nnoremap ss "_dd
+nnoremap S "_D
+
+nnoremap ;w :w<cr>
+nnoremap ;e :e<cr>
+
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+nnoremap <Up>    <nop>
+nnoremap <Down>  <nop>
+nnoremap <Left>  <nop>
+nnoremap <Right> <nop>
+inoremap <Up>    <nop>
+inoremap <Down>  <nop>
+inoremap <Left>  <nop>
+inoremap <Right> <nop>
+
+" Helper for the map below
+function! NewImpl()
+    :new
+    :winc j
+    :q
+endfunction
+
+" <leader>ew = Close the current tab, and open a new (Empty) one.
+nnoremap <leader>ew :call NewImpl()<cr>
+
+set backspace=indent,eol,start
+inoremap <c-k> <C-o>k
+inoremap <c-j> <C-o>j
+inoremap <c-l> <C-o>l
+inoremap <c-h> <C-o>h
+
+set nu
+set hls
+set rnu
+set wrap
+set scrolloff=5
+set title
+set cursorline
+set ignorecase
+set incsearch
+set shiftround
+
+" Centralised swapfiles location
+set directory^=~/.vim/swapfiles//
+
+" Persistent undo (Undo history is persistent across file closure)
+set undodir=~/.vim/undodir
+set undofile
+
+" Don't show current mode (e.g. --INSERT--) in the ruler.
+" We use Airline
+set noshowmode
+
+" Show last command in ruler
+set showcmd
+
+" Make the 'g' (Global) behaviour in search-and-replace the default
+set gdefault
+
+" Don't redraw while executing macros
+set lazyredraw
+set history=10000
+set listchars=tab:▸\ ,extends:❯,precedes:❮,nbsp:␣
+set showbreak=↪
+set numberwidth=1
+set virtualedit=onemore
+set clipboard=unnamed,unnamedplus
+set iskeyword-=-
+
+" Siwtch to the directory of the open buffer
+nnoremap <leader>cd :cd %:p:h<cr>:pwd<cr>
+
+" Maximize current split
+nnoremap <leader>m <C-w>_<C-w><Bar>
+
+" Bash-like keys for the command line.
+cnoremap <c-a> <home>
+cnoremap <c-e> <end>
+
+" Replace current word with the previously yanked word
+map <leader>r viwp
+
+" Changes the cursor's color to RED in insert mode, and to WHITE when exiting
+"   insert mode
+let &t_SI .= "\<Esc>]12;red\x7"
+let &t_EI .= "\<Esc>]12;white\x7"
+silent !echo -ne "\033]12;white\007"
+autocmd VimLeave * silent !echo -ne "\033]112\007"
+" let &t_EI .= "\<ESC>[2 q"
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*! SPELLING STUFF *!*!*!*!
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+set spellfile=~/.vim/spell.misc.utf-8.add
+hi SpellBad ctermbg=224
+
+function! MoveTabImpl(s)
+    let i = 0
+    while i < a:s
+        :tabn
+        let i += 1
+    endwhile
+endfunction
+
+nnoremap <leader>gt :<C-u>exec 'normal ' . v:count . expand("\<C-V><C-PageDown>")<cr>
+nnoremap gt :call MoveTabImpl(1)<cr>
+
+"set list
+"set listchars=tab:>.,trail:.
+"set listchars=tab:>.
+
+function! SwapCase(str)
+    if a:str ==# toupper(a:str)
+        let result = tolower(a:str)
+    else
+        let result = toupper(a:str)
+    endif
+    return result
+endfunction
+
+noremap <silent> cu ciw<Esc>y:call setreg('a', SwapCase(@"))<CR>"ap
+
+" search for visually selected text
+vnoremap // y/<C-R>"<CR>
+
+
+" visual shifting (builtin-repeat)
+vnoremap < <gv
+vnoremap > >gv
+
+function! s:RunShellCommand(n, cmdline)
+    :exe ":" a:n " | 0r ! " shellescape(a:cmdline)
+    :setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
+    :exe "normal! \<S-G>ddgg"
+endfunction
+
+" nnoremap <Leader>sv :let g:my_layout = winsaveview()<CR>
+" nnoremap <Leader>rv :call winrestview(g:my_layout)<CR>
+
+command! -complete=shellcmd -nargs=+ Sh call s:RunShellCommand('new', <q-args>)
+command! -complete=shellcmd -nargs=+ Shv call s:RunShellCommand('vnew', <q-args>)
+
+
+execute pathogen#infect()
+execute pathogen#helptags()
+syntax on
+
+autocmd BufNewFile,BufRead .gitignore set filetype=git
+autocmd FileType cpp setlocal commentstring=//\ %s
+autocmd FileType vim setlocal commentstring=\"\ %s
+autocmd FileType cmake setlocal commentstring=#\ %s
+autocmd FileType git setlocal commentstring=#\ %s
+autocmd FileType gitconfig setlocal commentstring=#\ %s
+
+set expandtab
+set shiftwidth=4
+set softtabstop=4
+set cino=(0g0N-s+0
+filetype plugin indent on
+filetype indent plugin on
+
+
+set term=xterm-256color
+set t_Co=256
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*! AIRLINE *!*!*!*!
+" *!*!*!*!*!*!*!*!*!*!*!*!*
+let g:airline_powerline_fonts=1
+let g:solarized_termcolors=256
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
+let g:airline_solarized_normal_green=1
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#fnamemod = ":t"
+"
+" Remvoe fileformat (e.g. utf-8) - Not needed and annoying
+let g:airline_section_y=''
+
+syntax enable
+set background=dark
+colorscheme solarized
+
+" Optional additional highlighting
+" Disable checking for catch-by-reference since its regex search is slow af WTF
+let g:cpp_no_catch_by_reference = 1
+let g:cpp_class_scope_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight = 1
+let g:cpp_no_hl_throw_spec = 1
+let g:cpp_no_hl_c_cast = 1
+
+
+" Disabled since its regex search is slllllow
+" let g:cpp_experimental_simple_template_highlight = 1
+let g:cpp_experimental_template_highlight=1
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*! NERDTREE *!*!*!*!
+" *!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:NERDTreeQuitOnOpen = 1
+autocmd StdinReadPre * let s:std_in=1
+map <C-n> :NERDTreeToggle<CR>
+map <C-m> :NERDTreeFind<CR>
+
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+    exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+    exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
+call NERDTreeHighlightFile('jade'   , 'green'   , 'none' , 'green'   , '#151515')
+call NERDTreeHighlightFile('ini'    , 'yellow'  , 'none' , 'yellow'  , '#151515')
+call NERDTreeHighlightFile('md'     , 'blue'    , 'none' , '#3366FF' , '#151515')
+call NERDTreeHighlightFile('yml'    , 'yellow'  , 'none' , 'yellow'  , '#151515')
+call NERDTreeHighlightFile('config' , 'yellow'  , 'none' , 'yellow'  , '#151515')
+call NERDTreeHighlightFile('conf'   , 'yellow'  , 'none' , 'yellow'  , '#151515')
+call NERDTreeHighlightFile('json'   , 'yellow'  , 'none' , 'yellow'  , '#151515')
+call NERDTreeHighlightFile('html'   , 'yellow'  , 'none' , 'yellow'  , '#151515')
+call NERDTreeHighlightFile('styl'   , 'cyan'    , 'none' , 'cyan'    , '#151515')
+call NERDTreeHighlightFile('css'    , 'cyan'    , 'none' , 'cyan'    , '#151515')
+call NERDTreeHighlightFile('coffee' , 'Red'     , 'none' , 'red'     , '#151515')
+call NERDTreeHighlightFile('js'     , 'Red'     , 'none' , '#ffa500' , '#151515')
+call NERDTreeHighlightFile('php'    , 'Magenta' , 'none' , '#ff00ff' , '#151515')
+call NERDTreeHighlightFile('cpp'    , 'Magenta' , 'none' , '#ff00ff' , '#151515')
+call NERDTreeHighlightFile('tpp'    , 'Magenta' , 'none' , '#ff00ff' , '#151515')
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*! NERDTREE GIT *!*!*!*!
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
+
+
+" -----------------------------------------------------------------------------
+" Highlight all instances of word under cursor, when idle.
+" Useful when studying strange source code.
+" Type z/ to toggle highlighting on/off.
+nnoremap <leader>z :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
+function! AutoHighlightToggle()
+  let @/ = ''
+  if exists('#auto_highlight')
+    au! auto_highlight
+    augroup! auto_highlight
+    setl updatetime=4000
+    echo 'Highlight current word: off'
+    return 0
+  else
+    augroup auto_highlight
+      au!
+      au CursorHold * let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>'
+    augroup end
+    setl updatetime=500
+    echo 'Highlight current word: ON'
+    return 1
+  endif
+endfunction
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! YCM !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*
+let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
+let g:ycm_server_python_interpreter = "/usr/bin/python"
+let g:ycm_semantic_triggers = {
+    \   'c' : ['->', '.','re![_a-zA-Z0-9]']
+\}
+let g:clang_complete_macros = 1
+let g:ycm_collect_identifiers_from_tags_files = 1
+
+" nnoremap ,gl :YcmCompleter GoToDefinition<CR>
+" nnoremap ,gr :YcmCompleter GoToDeclaration<CR>
+" nnoremap ,gx :YcmCompleter GoTo<CR>
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! DELIMITMATE !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+let delimitMate_expand_cr = 1
+let delimitMate_matchpairs = "(:),{:},[:]"
+set mps+=<:>
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! HIGHLIGHTING STUFF !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" hi DiffChange cterm=none ctermfg=Black ctermbg=LightMagenta
+" hi DiffText cterm=none ctermfg=Black ctermbg=Red
+
+" hi DiffAdd cterm=reverse ctermfg=108 ctermbg=235
+" hi DiffChange cterm=reverse ctermfg=103 ctermbg=235
+" hi DiffDelete cterm=reverse ctermfg=131 ctermbg=235
+" hi DiffText cterm=reverse ctermfg=208 ctermbg=235
+
+hi DiffAdd cterm=none ctermfg=112 ctermbg=22
+hi DiffChange cterm=none ctermfg=252 ctermbg=23
+hi DiffDelete cterm=bold ctermfg=125 ctermbg=52
+hi DiffText cterm=none ctermfg=87 ctermbg=30
+
+" hi DiffAdd cterm=none ctermfg=none ctermbg=#bada9f
+" hi DiffChange cterm=none ctermfg=none ctermbg=#e5d5ac
+" hi DiffDelete cterm=bold ctermfg=#ff8080 ctermbg=ffb0b0
+" hi DiffText cterm=none ctermfg=none ctermbg=#8cbee2
+
+" hi VertSplit cterm=none ctermfg=Black ctermbg=LightMagenta gui=none guifg=Black guibg=LightMagenta
+" The active tab's page label
+" hi TabLineSel cterm=none ctermfg=Black ctermbg=LightMagenta gui=none guifg=Black guibg=LightMagenta
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! GitGutter !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! GitGutter !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+set updatetime=100
+nnoremap <s-X> :GitGutterLineHighlightsToggle<CR>
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! DWM !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*
+" let g:dwm_map_keys = 0
+" nmap <C-,> <Plug>DWMRotateCounterclockwise
+" nmap <C-.> <Plug>DWMRotateClockwise
+
+" nmap <C-M> <Plug>DWMNew
+" nmap <C-C> <Plug>DWMClose
+" nmap <C-@> <Plug>DWMFocus
+" nmap <C-Space> <Plug>DWMFocus
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! CTags General !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" nnoremap <leader>t g]
+" vnoremap <leader>t g]
+nnoremap <leader>t :PreviewTag<cr>
+vnoremap <leader>t :PreviewTag<cr>
+" nnoremap g<c-]> <c-]>
+" vnoremap g<c-]> <c-]>
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! FZF !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+nnoremap <leader>d :call fzf#vim#tags("'" . expand('<cword>'))<CR>
+let g:fzf_buffers_jump = 1 " Jump to the existing window if possible
+
+" autocmd VimEnter * noremap <c-p> :execute 'GFiles -co'<cr>
+autocmd VimEnter * noremap <c-p> :FZF<cr>
+
+map <leader>a :Ag<cr>
+vmap <leader>a y:Ag <C-r>0<cr>
+
+" command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, '--follow --ignore *.o --ignore-dir dist', {'options': '--delimiter : --nth 4..'}, <bang>0)
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, '--follow --ignore-dir dist', {'options': '--delimiter : --nth 4..'}, <bang>0)
+
+" Fzf Configuration
+" This is the default extra key bindings
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+" Default fzf layout
+" - down / up / left / right
+" let g:fzf_layout = { 'down': '~40%' }
+
+" Customize fzf colors to match your color scheme
+" let g:fzf_colors =
+" \ { 'fg':      ['fg', 'Normal'],
+"   \ 'bg':      ['bg', 'Normal'],
+"   \ 'hl':      ['fg', 'Comment'],
+"   \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+"   \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+"   \ 'hl+':     ['fg', 'Statement'],
+"   \ 'info':    ['fg', 'PreProc'],
+"   \ 'prompt':  ['fg', 'Conditional'],
+"   \ 'pointer': ['fg', 'Exception'],
+"   \ 'marker':  ['fg', 'Keyword'],
+"   \ 'spinner': ['fg', 'Label'],
+"   \ 'header':  ['fg', 'Comment'] }
+
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" Advanced customization using autoload functions
+inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+
+" Map Alt-l and Alt-r to move between tabs
+" Don't enable this - They are frequently accidentally being pressed
+" exec "set <A-l>=\el"
+" noremap <A-l> gt
+" exec "set <A-h>=\eh"
+" nnoremap <A-h> gT
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! SMOOTH SCROLL !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! EXPAND REGION !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+map K <Plug>(expand_region_expand)
+map J <Plug>(expand_region_shrink)
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! MULTIPLE CURSORS !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" let g:multi_cursor_use_default_mapping = 0
+" let g:multi_cursor_start_word_key      = '<leader>n'
+" let g:multi_cursor_select_all_word_key = '<A-n>'
+" let g:multi_cursor_start_key           = 'g<C-n>'
+" let g:multi_cursor_select_all_key      = 'g<A-n>'
+" let g:multi_cursor_next_key            = '<C-n>'
+" let g:multi_cursor_prev_key            = '<C-p>'
+" let g:multi_cursor_skip_key            = '<C-x>'
+" let g:multi_cursor_quit_key            = '<Esc>'
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! PLACE.VIM !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+nmap ga <Plug>(place-insert)
+nmap gb <Plug>(place-insert-multiple)
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! GUNDO !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*
+nnoremap <F8> :GundoToggle<CR>
+let g:gundo_prefer_python3 = 1
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! TAGBAR !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+nmap <F9> :TagbarToggle<CR>
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! FSWITCH !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+let b:fswitchlocs = './'
+nnoremap <F5>            :FSTab<cr>
+nmap <silent> <Leader>oF :FSHere<cr>
+nmap <silent> <Leader>oL :FSSplitRight<cr>
+nmap <silent> <Leader>oH :FSSplitLeft<cr>
+nmap <silent> <Leader>oK :FSSplitAbove<cr>
+nmap <silent> <Leader>oJ :FSSplitBelow<cr>
+
+
+" Jumps to the tab & window of the file 'filename'
+" TODO: Add this to FWSwitch (Their code..)
+function! JumpTo(filename)
+    let buf_name = bufname(a:filename)
+    if "" == buf_name
+        return 0
+    endif
+    let buf_num = bufnr(buf_name)
+
+    let curr_tab = tabpagenr()
+    let tabs_amount = 0
+    tabdo let tabs_amount += 1
+    exec "tabnext ".curr_tab
+
+    " Iterate over all the tabs
+    for curr_tab in range(tabs_amount)
+        let curr_tab += 1
+        let curr_tab_windows = tabpagebuflist(curr_tab)
+        for curr_win_in_tab in curr_tab_windows
+            if curr_win_in_tab == buf_num
+                " echo 'tab: ' . curr_tab
+                " echo 'win: ' . curr_win_in_tab
+                exec 'tabn ' . curr_tab
+                exec curr_win_in_tab . "wincmd w"
+                return
+            endif
+        endfor
+    endfor
+endfunction
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! REPEAT !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+silent! call repeat#set("{", v:count)
+silent! call repeat#set("}", v:count)
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! ABOLISH !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+autocmd BufEnter * :Abolish {despa,sepe}rat{e,es,ed,ing,ely,ion,ions,or}  {despe,sepa}rat{}
+autocmd BufEnter * :Abolish statuc static
+autocmd BufEnter * :Abolish functiokn function
+autocmd BufEnter * :Abolish wawy away
+
+
+let g:syntastic_cpp_checkers = ['ClangCheck']
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! VINARISE !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" Look at vinarise.vim for maps
+nnoremap <leader>hx :Vinarise<cr>
+
+let g:usemarks = 0
+" let g:previewIfHold = 1
+let g:mt_jump_to_first_markers = 1
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! EASY ALIGN !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! OVER !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!
+map <leader>se :OverCommandLine<cr>:%s/
+nmap <leader>se :OverCommandLine<cr>:%s/
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! BETTER WHITESPACE !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+let g:strip_whitespace_on_save=1
+let g:strip_whitelines_at_eof=1
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! CLEVER F !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:clever_f_smart_case=1
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! INCSEARCH !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+map / <Plug>(incsearch-forward)
+map ? <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! PASTE EASY !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:paste_easy_message=0
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! IDUNNO !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let base16colorspace=256
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! SYNTASTIC !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" Syntastic Configuration
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+" let g:syntastic_enable_elixir_checker = 1
+" let g:syntastic_elixir_checkers = ["elixir"]
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! PENCIL !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:pencil#wrapModeDefault = 'soft'
+let g:languagetool_jar  = '/opt/languagetool/languagetool-commandline.jar'
+
+augroup pencil
+  autocmd!
+  autocmd FileType markdown,mkd call pencil#init()
+  autocmd FileType text         call pencil#init()
+augroup END
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! DUMPX !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*
+let g:dumpxCFLAGS='-std=c++17 -O0 -g -gdwarf-2 -I/usr/include/c++/5/bits -I/usr/include/x86_64-linux-gnu'
+nnoremap <leader>xz :DXT<cr>
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! RAINBOW PARENTHESIS !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \ ]
+
+
+let g:rbpt_max = 16
+
+let g:rbpt_loadcmd_toggle = 0
+
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+" au Syntax * RainbowParenthesesLoadSquare
+" au Syntax * RainbowParenthesesLoadBraces
+" au syntax * RainbowParenthesesLoadChevrons
+
+nmap csa cxll.h
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! HIGHLIGHTED YANK !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+if !exists('##TextYankPost')
+  map y <Plug>(highlightedyank)
+endif
+let g:highlightedyank_highlight_duration = -1
+
+" augroup highlightedyankautoclose
+"   autocmd!
+"   autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * call highlightedyank#obsolete#highlight#cancel()
+" augroup END
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! DEVICONS !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:webdevicons_conceal_nerdtree_brackets = 1
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+
+" Don't override the fileformat of airline (Don't want it)
+let g:webdevicons_enable_airline_statusline_fileformat_symbols=0
+autocmd FileType nerdtree setlocal nolist
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! LH-CPP !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:sources_root='src/0.5'
+
+set cmdheight=2
+let g:echodoc_enable_at_startup = 1
+
+
+function! s:config_fuzzyall(...) abort
+  return extend(copy({
+  \   'converters': [
+  \     incsearch#config#fuzzy#converter(),
+  \     incsearch#config#fuzzyspell#converter()
+  \   ],
+  \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> z/ incsearch#go(<SID>config_fuzzyall())
+noremap <silent><expr> z? incsearch#go(<SID>config_fuzzyall({'command': '?'}))
+noremap <silent><expr> zg? incsearch#go(<SID>config_fuzzyall({'is_stay': 1}))
+
+
+noremap <m-u> :PreviewScroll -1<cr>
+noremap <m-d> :PreviewScroll +1<cr>
+inoremap <m-u> <c-\><c-o>:PreviewScroll -1<cr>
+inoremap <m-d> <c-\><c-o>:PreviewScroll +1<cr>
+
+noremap <F4> :PreviewSignature!<cr>
+inoremap <F4> <c-\><c-o>:PreviewSignature!<cr>
+
+
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
+let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exact match
+let g:NERDTreeHighlightFoldersFullName = 1 " highlights the folder name
+
+let s:brown = "905532"
+let s:aqua =  "3AFFDB"
+let s:blue = "689FB6"
+let s:darkBlue = "44788E"
+let s:purple = "834F79"
+let s:lightPurple = "834F79"
+let s:red = "AE403F"
+let s:beige = "F5C06F"
+let s:yellow = "F09F17"
+let s:orange = "D4843E"
+let s:darkOrange = "F16529"
+let s:pink = "CB6F6F"
+let s:salmon = "EE6E73"
+let s:green = "8FAA54"
+let s:lightGreen = "31B53E"
+let s:white = "FFFFFF"
+let s:rspec_red = 'FE405F'
+let s:git_orange = 'F54D27'
+
+let g:NERDTreeExtensionHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreeExtensionHighlightColor['css'] = s:blue " sets the color of css files to blue
+
+let g:NERDTreeExactMatchHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreeExactMatchHighlightColor['.gitignore'] = s:git_orange " sets the color for .gitignore files
+
+let g:NERDTreePatternMatchHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreePatternMatchHighlightColor['.*_spec\.rb$'] = s:rspec_red " sets the color for files ending with _spec.rb
+
+let g:NERDTreeLimitedSyntax = 1
+
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! SNAKE !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*
+command! -nargs=0 Snake VimGameSnake
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! LH-CPP !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:indentLine_enabled = 0
+let g:indentLine_char='▏'
+autocmd FileType python IndentLinesToggle
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+" *!*!*!*!*! DIMINACTIVE !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*
+let g:diminactive_use_syntax = 1
+let g:diminactive_enable_focus = 1
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! EASYGREP !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:EasyGrepIgnoreCase = 0
+
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+" *!*!*!*!*! UNDOQUIT !*!*!*!*!*
+" *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+let g:undoquit_mapping = '\u'

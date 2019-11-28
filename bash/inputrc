@@ -1,0 +1,6 @@
+"h": backward-word
+"l": forward-word
+"[1;5D": backward-word
+"[1;5C": forward-word
+"k": history-search-backward
+"j": history-search-forward

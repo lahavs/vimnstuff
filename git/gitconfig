@@ -1,0 +1,39 @@
+[core]
+    editor = vim
+
+[color]
+    ui = auto
+
+[pull]
+    default = current
+
+[push]
+    default = current
+
+[alias]
+    logp = "!bash -c \"LESS='-r#3M' git-log --patch-with-stat --graph --color=always --format='%C(auto)%h%d %s %C(black)%C(bold)%cr' $*\"" -
+    brm = "!bash -c 'for x in $*; do /bin/rm -r ./$GIT_PREFIX$x; done'" -
+    revdel = "!bash -c 'git-ls-files -d | xargs git checkout --'" -
+    s = "!bash -c 'git status'" -
+
+    # Looks like a bitch since otherwise bash would compute 'git-rev-parse --abbrev-ref HEAD'
+    #   only once (When entering git-sh), and not everytime this command is executed.
+    hardup = !bash -c '"function _zz() { git-fetch origin $(eval ${1}); git-reset --hard FETCH_HEAD; }; _zz \"git-rev-parse --abbrev-ref HEAD\";"'
+    ctags = !.git/hooks/ctags
+
+[pager]
+    # log  = diff-highlight | less
+    # show = diff-highlight | less
+    # diff = diff-highlight | less
+
+[rerere]
+    enabled = 1
+    autoupdate = true
+
+[diff]
+    renamelimit = 1816
+    renames = copies
+    algorithm = minimal
+
+[init]
+    templatedir = ~/.git_template
