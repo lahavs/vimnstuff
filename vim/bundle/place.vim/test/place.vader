@@ -1,0 +1,114 @@
+Before (Set the mapping to ga for tests):
+  nmap ga <Plug>(place-insert)
+  let g:place_blink = 0
+
+Given (A buffer with some text):
+  $this->test
+
+Do (ga$; - Insert a semi-colon);
+  ga$;
+
+Expect (A semi colon to be inserted at the end):
+  $this->test;
+
+Given (A function parameter without a comma):
+  function($a $b)
+
+Do (f$gae - Go to the first parameter and insert a comment):
+  f$gae,
+
+Expect (A comma to be inserted):
+  function($a, $b)
+
+Given (A multiline buffer):
+  This is my buffer.
+  It spans multiple lines..
+
+Do (gaG. - Add a '.' on the last line):
+  gaG.
+
+Expect (A full stop to be added on the last line at the end):
+  This is my buffer.
+  It spans multiple lines...
+
+Given (A buffer with some text):
+  This is Y sentence
+
+Do (gatYM - Insert an M before Y):
+  gatYM
+
+Expect (A capital M to be appended from the find motion):
+  This is MY sentence
+
+Given (A buffer with some text):
+  I like ars.
+
+Do (gaFac - Insert a c before a):
+  f.gaFac
+
+Expect (c to be inserted before a):
+  I like cars.
+
+Given (A buffer with some text):
+  I hae cars.
+
+Do (gaTa - Insert a t to spell 'hate'):
+  fcgaTat
+
+Expect (t to be inserted after a and before e):
+  I hate cars.
+
+Given (A buffer with some text):
+  ?php
+  $a = 4;
+  $b = 5;
+  $c = $a + $b;
+
+Do (gagg< - Insert a < at the start of the file):
+  gagg<
+
+Expect(A < to be inserted at the beginning of the file):
+  <?php
+  $a = 4;
+  $b = 5;
+  $c = $a + $b;
+
+Given (A buffer with some text):
+  This is
+  one paragraph
+
+  here is another
+
+Do (ga}- - Insert a dash in the linebreak):
+  ga}-
+
+Expect (A - to be inserted):
+  This is
+  one paragraph
+  -
+  here is another
+
+Given (A buffer with some text):
+  function(x, $y)
+
+Do (gaf($ - Insert a $ after the opening paren):
+  gaf($
+
+Expect(A $ to be inserted after the opening paren):
+  function($x, $y)
+
+Given (A buffer with some text):
+  Hell
+
+Do ( - A complicated and unrealistic insertion):
+  gae_
+  gat_o
+  ga$f
+  ga$r
+  ga$i
+  ga$e
+  ga$n
+  ga$d
+
+Expect (An insertion to have taken place):
+  Hello_friend

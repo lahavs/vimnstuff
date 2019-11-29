@@ -1,0 +1,48 @@
+*cottidie.txt*	Your quotidian Vim tip in 78 characters
+
+Author: glts <676c7473@gmail.com>
+License: Same terms as Vim itself (see |license|)
+
+DESCRIPTION					*cottidie*
+
+This plugin brings friendly, syntax-highlighted Vim tips to your messages
+area.  At 78 characters these have enough substance to inspire but not enough
+to distract.
+
+The location of the tips files is configurable, so this plugin may also serve
+you as a "daily tip" engine which draws from your own notes.  (Not actually
+daily though, it doesn't include any timing mechanism.)
+
+						*:CottidieTip*
+:CottidieTip[!]		Shows a tip in the messages area.  With the [!] the
+			tip is also put in the |:messages| history but the
+			output is less colourful.
+
+It may be tempting to set this up to fire on the |VimEnter| event: >
+
+	autocmd VimEnter * CottidieTip
+
+Unfortunately, Vim's handling of |:echo| messages in autocommands is buggy, so
+this may or may not work depending on what kind of Vim you are using.
+
+SETTINGS					*cottidie-settings*
+
+This plugin works out of the box as it comes packaged with a nice stockpile of
+tips.  The tips sources can be adjusted with the following options.
+
+						*g:cottidie_tips_files*
+	g:cottidie_tips_files ~
+	List of paths to tips files.  Any path Vim can |:read| is allowed,
+	including remote paths like ftp://ftp.me.com/tips.txt.  Example: >
+
+	let g:cottidie_tips_files =
+	    \ ['~/mytips.txt', 'http://glts.github.io/vim-cottidie/tips']
+<
+	User-supplied tips are used in addition to the default tips, unless --
+
+						*g:cottidie_no_default_tips*
+	g:cottidie_no_default_tips ~
+	Disable default tips.  Setting this to 1 disables loading of the
+	default tips.
+
+ vim:tw=78:ts=8:ft=help:norl:

@@ -1,0 +1,13 @@
+lost	lost.txt	/*lost*
+lost-:Lost	lost.txt	/*lost-:Lost*
+lost-Lost_string()	lost.txt	/*lost-Lost_string()*
+lost-about	lost.txt	/*lost-about*
+lost-commands	lost.txt	/*lost-commands*
+lost-context	lost.txt	/*lost-context*
+lost-functions	lost.txt	/*lost-functions*
+lost-gL	lost.txt	/*lost-gL*
+lost-mappings	lost.txt	/*lost-mappings*
+lost-regex	lost.txt	/*lost-regex*
+lost-settings	lost.txt	/*lost-settings*
+lost-statusline	lost.txt	/*lost-statusline*
+lost.txt	lost.txt	/*lost.txt*

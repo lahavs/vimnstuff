@@ -1,0 +1,9 @@
+VimL:" Default File header - C/C++ Definition File-Template, Luc Hermitte
+/**
+ * This file contains the definition of the '¡expand('%:r')¡' class
+ *
+ * @author ¡substitute(Author(0),'\r"','\r *','g')¡
+ * @since ¡lh#time#date()¡
+ * @file
+ */
+

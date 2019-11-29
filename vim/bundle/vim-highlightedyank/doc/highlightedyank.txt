@@ -1,0 +1,109 @@
+*highlightedyank.txt*	Make the yanked region apparent!
+						Last change:16-Mar-2018.
+
+Author  : machakann <mckn{at}outlook.jp>
+License : NYSL license
+          Japanese <http://www.kmonos.net/nysl/>
+          English (Unofficial) <http://www.kmonos.net/nysl/index.en.html>
+
+Requirement:	Vim 7.4 or higher
+		|+reltime| feature
+		|+float| feature
+		|+timers| feature (optional)
+
+==============================================================================
+INDEX					*highlightedyank-index*
+
+INTRODUCTION				|highlightedyank-introduction|
+HIGHLIGHT GROUPS			|highlightedyank-highlight-groups|
+COMMANDS				|highlightedyank-commands|
+KNOWN ISSUES				|highlightedyank-known-issues|
+
+==============================================================================
+INTRODUCTION				*highlightedyank-introduction*
+
+*highlightedyank.vim* is a plugin to just highlight a region where user yanks.
+That is a pretty trick to make your coding easier.
+
+If you are using Vim 8.0.1934 or later, or neovim <https://neovim.io/>,
+there is no need for configuration, as the highlight event is automatically
+triggered by |TextYankPost| event.
+
+Otherwise define a keymapping to `<Plug>(highlightedyank)`. It would be good
+to check the existence of |TextYankPost| event.
+>
+	if !exists('##TextYankPost')
+	  map y <Plug>(highlightedyank)
+	endif
+<
+The highlight duration can be optimized by
+*g:highlightedyank_highlight_duration* ,
+*b:highlightedyank_highlight_duration* .
+Assign number of time in milli seconds.
+>
+	let g:highlightedyank_highlight_duration = 1000
+<
+If a negative number is assigned, the highlight would get persistent.
+>
+	let g:highlightedyank_highlight_duration = -1
+<
+When a new text is yanked, the old highlighting would be deleted. Or when
+former lines are edited, the highlighting would be deleted to prevent shifting
+the position, also.
+
+------------------------------------------------------------------------------
+
+The highlight process could be slow when you yanked a wide region. Thus, this
+plugin has the safety to avoid the problem.
+
+					*g:highlightedyank_max_lines*
+					*b:highlightedyank_max_lines*
+|g:highlightedyank_max_lines| and |b:highlightedyank_max_lines| enables to set
+a threshold number of lines to give up highlighting. The following line in
+vimrc make this plugin to give up over one thousand lines.
+>
+	let g:highlightedyank_max_lines = 1000
+<
+If both of those variables are not defined, it gives up over 10000 lines.
+
+==============================================================================
+HIGHLIGHT GROUPS			*highlightedyank-highlight-groups*
+
+If you want to change the highlighting color, re-define the following
+highlight group.
+
+	The highlight group is to define the highlight for yanked region.
+	It is linked to a highlight group IncSearch |hl-IncSearch| in default.
+>
+	highlight link HighlightedyankRegion IncSearch
+<
+	If you want to asign the color directly, then:
+>
+	highlight HighlightedyankRegion ctermbg=237 guibg=#404040
+<
+	See |:highlight| help for more details.
+==============================================================================
+COMMANDS				*highlightedyank-commands*
+
+:HighlightedyankOff				*:HighlightedyankOff*
+	This command stops highlighting temporarily. The highlight is a
+	relatively heavy process. Thus it may reduce processing time when
+	using |complex-repeat| to edit a lot of strings in a buffer.
+
+:HighlightedyankOn				*:HighlightedyankOn*
+	This command (re)starts highlighting stopped by |:HighlightedyankOff|.
+
+:HighlightedyankToggle				*:HighlightedyankToggle*
+	This command toggles on/off of highlighting feature.
+	See |:HighlightedyankOff| and |:HighlightedyankOn| also.
+
+==============================================================================
+KNOWN ISSUES				*highlightedyank-known-issues*
+
+ - When 'clipboard' is set as "unnamed", `"*yiw` updates "0 |quote0|
+   register.
+ - When 'clipboard' is set as "unnamedplus", `"+yiw` updates "0 |quote0|
+   register.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:
