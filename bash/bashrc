@@ -145,3 +145,6 @@ export FZF_CTRL_R_OPTS='--height 80% --reverse'
 stty -ixon
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# Space after writing '!!' will expand the !!
+bind Space:magic-space
