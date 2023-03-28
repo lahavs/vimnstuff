@@ -144,14 +144,22 @@ nnoremap gt :call MoveTabImpl(1)<cr>
 
 function! SwapCase(str)
     if a:str ==# toupper(a:str)
-        let result = tolower(a:str)
-    else
-        let result = toupper(a:str)
+        return tolower(a:str)
     endif
-    return result
+    return toupper(a:str)
 endfunction
 
-noremap <silent> cu ciw<Esc>y:call setreg('a', SwapCase(@"))<CR>"ap
+let s:saved_pos = []
+
+function! SavePos()
+    let s:saved_pos = getpos('.')
+endfunction
+
+function! RestorePos()
+    call cursor(s:saved_pos[1], s:saved_pos[2])
+endfunction
+
+noremap <silent> cu :call SavePos()<CR>ciw<c-o>:call setreg('', SwapCase(@"))<CR><c-o>""P<esc>:call RestorePos()<CR>
 
 " search for visually selected text
 vnoremap // y/<C-R>"<CR>
