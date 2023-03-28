@@ -2,6 +2,8 @@ set nocompatible
 
 set encoding=utf8
 
+let mapleader = ' '
+
 " set hidden
 
 " TagsGenerate[!] - Generate 'tags' file
@@ -806,4 +808,4 @@ let g:EasyGrepIgnoreCase = 0
 " *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 " *!*!*!*!*! UNDOQUIT !*!*!*!*!*
 " *!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
-let g:undoquit_mapping = '\u'
+let g:undoquit_mapping = '<leader>u'
