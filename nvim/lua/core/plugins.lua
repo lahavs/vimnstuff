@@ -103,7 +103,7 @@ require('lazy').setup({
   -- },
 
   {
-    'HiPhish/nvim-ts-rainbow2',
+    'HiPhish/rainbow-delimiters.nvim',
   },
 
   {

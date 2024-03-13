@@ -8,22 +8,6 @@ require('nvim-treesitter.configs').setup {
   auto_install = false,
 
   highlight = { enable = true },
-  rainbow = {
-    enable = true,
-    query = 'rainbow-parens',
-    hlgroups = {
-      -- Replace order of Yellow and Red, since Red is a bit harsh
-      'TSRainbowYellow',
-      'TSRainbowRed',
-      'TSRainbowBlue',
-      'TSRainbowOrange',
-      'TSRainbowGreen',
-      'TSRainbowViolet',
-      'TSRainbowCyan',
-    },
-    -- Highlight the entire buffer all at once
-    strategy = require 'ts-rainbow.strategy.global',
-  },
   -- TODO(lahavs): This messes with multiline comments in C (/*)
   -- Writing /* and then newline will result in extra indentation
   -- /**<cr>
