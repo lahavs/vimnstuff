@@ -147,8 +147,14 @@ vim.o.shortmess = vim.o.shortmess .. 'S'
 vim.wo.number = true
 vim.wo.relativenumber = true
 
--- .. but disable linue numbers in Terminal windows
+-- .. but disable linue numbers in Terminal windows (e.g. fzf :Files)
 vim.api.nvim_command("autocmd TermOpen * setlocal nonumber norelativenumber")
+
+-- Disable when in Terminal windows (e.g. fzf :Files):
+-- 1. tablines (for some reason it's done automatically in vim..)
+-- 2. statusline
+vim.api.nvim_command("autocmd TermOpen * setlocal showtabline=0 laststatus=0")
+vim.api.nvim_command("autocmd TermClose * setlocal showtabline=1 laststatus=2")
 
 vim.o.title = true
 
