@@ -13,6 +13,16 @@ local function get_search_occurrences_count()
   return ''
 end
 
+-- Add "SPELL [lang]" to statusline when in spell mode
+-- Taken from https://github.com/mike325/nvim/blob/master/lua/configs/lualine/sections.lua
+local function spell()
+  if vim.opt_local.spell:get() then
+    local lang = vim.opt_local.spelllang:get()[1] or 'en'
+    return ('SPELL [%s]'):format(lang:upper())
+  end
+  return ''
+end
+
 require('lualine').setup {
   options = {
     icons_enabled = true,
@@ -29,6 +39,11 @@ require('lualine').setup {
     }
   },
   sections = {
+    lualine_a = {
+      'mode',
+      spell
+    },
+
     -- By default its:
     -- lualine_x = {'encoding', 'fileformat', 'filetype'},
     -- Remove encoding, it's annoying..
