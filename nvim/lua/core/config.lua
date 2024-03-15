@@ -239,6 +239,9 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+-- Make spelling mistakes more visible - Make them red.
+vim.cmd('hi SpellBad ctermfg=NONE ctermbg=NONE gui=NONE guibg=Red')
+
 -- Delete all marks on entry, as all marks are saved in the shada file
 local vimenter_delmarks_group = vim.api.nvim_create_augroup('vimenter-delmarks', { clear = true })
 vim.api.nvim_create_autocmd("VimEnter", {
