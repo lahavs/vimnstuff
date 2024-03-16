@@ -74,5 +74,10 @@ require('nvim-treesitter.configs').setup {
 
 -- Make 'tpp' filetype be parsed as cpp file. See:
 -- https://github.com/nvim-treesitter/nvim-treesitter/issues/2698
-local ft_to_parser = require('nvim-treesitter.parsers').filetype_to_parsername
-ft_to_parser.tpp = 'cpp'
+--
+-- TODO(lahavs): This way is deprecated
+-- local ft_to_parser = require('nvim-treesitter.parsers').filetype_to_parsername
+-- ft_to_parser.tpp = 'cpp'
+--
+-- TODO(lahavs): This raises errors when a .tpp file is opened..
+-- vim.treesitter.language.register('cpp', 'tpp')
